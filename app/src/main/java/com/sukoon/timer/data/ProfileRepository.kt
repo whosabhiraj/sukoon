@@ -37,20 +37,13 @@ class ProfileRepository(context: Context) {
     /** A couple of gentle starter routines so the app is useful on first launch. */
     private fun starters(): List<TimerProfile> = listOf(
         TimerProfile(
-            id = "starter-stretch",
-            name = "Morning Stretch",
-            rounds = 8,
+            id = "night",
+            name = "Night stretch",
+            rounds = 10,
             workSeconds = 120,
-            restSeconds = 30,
+            restSeconds = 2,
             leadInSeconds = 5,
-        ),
-        TimerProfile(
-            id = "starter-gentle",
-            name = "Gentle Routine",
-            rounds = 5,
-            workSeconds = 150,
-            restSeconds = 45,
-            leadInSeconds = 5,
+            countdownCues = true,
         ),
     )
 

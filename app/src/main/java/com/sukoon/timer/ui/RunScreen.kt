@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -133,8 +134,11 @@ private fun RunningContent(vm: TimerEngine) {
                         shown,
                         fontFamily = Fraunces,
                         fontWeight = FontWeight(600),
-                        fontSize = 82.sp,
+                        // Leave comfortable space inside the ring, including for 1:00:00.
+                        fontSize = 64.sp,
                         color = Ink,
+                        maxLines = 1,
+                        softWrap = false,
                     )
                 }
                 Text(
@@ -190,9 +194,11 @@ private fun DoneContent(vm: TimerEngine) {
             Text(
                 "✿",
                 fontFamily = Fraunces,
-                fontSize = 96.sp,
+                fontSize = 128.sp,
                 color = Color.White,
-                modifier = Modifier.scale(bloom),
+                // Font baseline metrics put the visible flower slightly above the
+                // centre of its text box; offset it to the ripple's visual centre.
+                modifier = Modifier.offset(x = -2.dp, y = -8.dp).scale(bloom),
             )
         }
         Spacer(Modifier.height(34.dp))
@@ -228,7 +234,7 @@ private fun Ripples() {
     val t = rememberInfiniteTransition(label = "ripples")
     val p by t.animateFloat(
         0f, 1f,
-        infiniteRepeatable(tween(2800, easing = LinearEasing)),
+        infiniteRepeatable(tween(3200, easing = LinearEasing)),
         label = "p",
     )
     Canvas(Modifier.fillMaxSize()) {

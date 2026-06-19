@@ -158,11 +158,11 @@ fun EditScreen(vm: TimerEngine, existing: TimerProfile?) {
                     ) {
                         Column(Modifier.weight(1f)) {
                             Text(
-                                "Countdown ticks",
+                                "3, 2, 1 countdown beeps",
                                 style = MaterialTheme.typography.titleMedium, color = Ink,
                             )
                             Text(
-                                "A soft tick for the last 3 seconds",
+                                "Play a soft beep in the last 3 seconds of each timer",
                                 style = MaterialTheme.typography.bodyMedium, color = InkSoft,
                             )
                         }
