@@ -32,7 +32,7 @@ sealed interface Screen {
 class TimerEngine(app: Application) : AndroidViewModel(app) {
 
     private val repo = ProfileRepository(app)
-    private val chimes = ChimePlayer()
+    private val chimes = ChimePlayer(app)
 
     // ---- Saved routines & navigation -------------------------------------------------------
     var profiles by mutableStateOf(repo.load()); private set
@@ -104,6 +104,11 @@ class TimerEngine(app: Application) : AndroidViewModel(app) {
         paused = false
         skipRequested = false
         phase = Phase.Idle
+    }
+
+    override fun onCleared() {
+        job?.cancel()
+        chimes.release()
     }
 
     private suspend fun runSequence(p: TimerProfile) {

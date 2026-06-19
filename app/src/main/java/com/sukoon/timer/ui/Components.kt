@@ -22,8 +22,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -54,6 +55,7 @@ fun TimerRing(
     fraction: Float,       // 1f at the start of a phase, 0f when it ends
     color: Color,
     modifier: Modifier = Modifier,
+    trackColor: Color = MaterialTheme.colorScheme.surfaceVariant,
     content: @Composable () -> Unit,
 ) {
     val animated by animateFloatAsState(
@@ -62,38 +64,50 @@ fun TimerRing(
         label = "ring",
     )
     val ringColor by animateColorAsState(color, tween(600), label = "ringColor")
-    val track = MaterialTheme.colorScheme.surfaceVariant
 
     Box(modifier.aspectRatio(1f), contentAlignment = Alignment.Center) {
         Canvas(Modifier.fillMaxWidth().aspectRatio(1f)) {
             val stroke = size.minDimension * 0.05f
-            val pad = stroke * 1.6f
+            val pad = stroke * 1.8f
             val arcSize = Size(size.minDimension - pad * 2, size.minDimension - pad * 2)
             val topLeft = Offset(
                 (size.width - arcSize.width) / 2f,
                 (size.height - arcSize.height) / 2f,
             )
+            val radius = arcSize.width / 2f
+            val centre = Offset(size.width / 2f, size.height / 2f)
             // soft glow
             drawArc(
-                color = ringColor.copy(alpha = 0.16f),
+                color = ringColor.copy(alpha = 0.22f),
                 startAngle = -90f, sweepAngle = 360f, useCenter = false,
                 topLeft = topLeft, size = arcSize,
-                style = Stroke(width = stroke * 2.4f, cap = StrokeCap.Round),
+                style = Stroke(width = stroke * 2.6f, cap = StrokeCap.Round),
             )
             // full track
             drawArc(
-                color = track,
+                color = trackColor,
                 startAngle = -90f, sweepAngle = 360f, useCenter = false,
                 topLeft = topLeft, size = arcSize,
                 style = Stroke(width = stroke, cap = StrokeCap.Round),
             )
             // remaining time
+            val sweep = 360f * animated
             drawArc(
                 color = ringColor,
-                startAngle = -90f, sweepAngle = 360f * animated, useCenter = false,
+                startAngle = -90f, sweepAngle = sweep, useCenter = false,
                 topLeft = topLeft, size = arcSize,
                 style = Stroke(width = stroke, cap = StrokeCap.Round),
             )
+            // glowing dot at the leading tip
+            if (animated > 0.001f) {
+                val angle = Math.toRadians((-90f + sweep).toDouble())
+                val tip = Offset(
+                    centre.x + radius * kotlin.math.cos(angle).toFloat(),
+                    centre.y + radius * kotlin.math.sin(angle).toFloat(),
+                )
+                drawCircle(ringColor.copy(alpha = 0.30f), radius = stroke * 1.5f, center = tip)
+                drawCircle(ringColor, radius = stroke * 0.62f, center = tip)
+            }
         }
         content()
     }
@@ -105,14 +119,17 @@ fun Stepper(
     label: String,
     valueText: String,
     accent: Color,
+    valueColor: Color,
+    container: Color,
     onMinus: () -> Unit,
     onPlus: () -> Unit,
     modifier: Modifier = Modifier,
+    onValueClick: (() -> Unit)? = null,
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.surface,
+        color = container,
         shadowElevation = 0.dp,
         tonalElevation = 0.dp,
     ) {
@@ -120,20 +137,35 @@ fun Stepper(
             Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Column(Modifier.weight(1f)) {
+            Column(
+                Modifier
+                    .weight(1f)
+                    .then(if (onValueClick != null) Modifier.clickable(onClick = onValueClick) else Modifier),
+            ) {
                 Text(
                     label,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = valueColor.copy(alpha = 0.75f),
                 )
                 Spacer(Modifier.height(2.dp))
-                Text(
-                    valueText,
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        valueText,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = valueColor,
+                    )
+                    if (onValueClick != null) {
+                        Spacer(Modifier.size(8.dp))
+                        Icon(
+                            Icons.Rounded.Edit,
+                            contentDescription = "Type a value for $label",
+                            tint = valueColor.copy(alpha = 0.4f),
+                            modifier = Modifier.size(17.dp),
+                        )
+                    }
+                }
             }
-            RoundIconButton(Icons.Rounded.Remove, "Decrease $label", accent.copy(alpha = 0.14f), accent, onMinus)
+            RoundIconButton(Icons.Rounded.Remove, "Decrease $label", Color.White.copy(alpha = 0.6f), accent, onMinus)
             Spacer(Modifier.size(12.dp))
             RoundIconButton(Icons.Rounded.Add, "Increase $label", accent, Color.White, onPlus)
         }

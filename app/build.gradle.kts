@@ -42,6 +42,11 @@ android {
         compose = true
     }
 
+    // Keep the chime WAVs uncompressed so SoundPool can open them via a file descriptor.
+    androidResources {
+        noCompress += "wav"
+    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"

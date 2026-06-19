@@ -8,93 +8,87 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sukoon.timer.model.Phase
 
-// ---- The palette: lavender, sage, baby pink, and a lighter Claude clay -----------------
-val Lavender = Color(0xFFB9A7E0)
-val LavenderSoft = Color(0xFFEDE7FA)
-val Sage = Color(0xFF8FB58C)
-val SageSoft = Color(0xFFE3EEE0)
-val BabyPink = Color(0xFFF0B6C6)
-val PinkSoft = Color(0xFFFBE4EA)
-val ClaudePeach = Color(0xFFE7A98C) // a softer, lighter take on the Claude clay tone
-val PeachSoft = Color(0xFFF8E2D6)
+// ---- Palette: lavender, sage, baby pink, a lighter Claude clay — but bolder ----------
+val Lavender = Color(0xFF9B86D9)
+val LavenderSoft = Color(0xFFE7DEFA)
+val Sage = Color(0xFF6FB387)
+val SageSoft = Color(0xFFDCEFE0)
+val BabyPink = Color(0xFFF48FB1)
+val PinkSoft = Color(0xFFFBDCE7)
+val ClaudePeach = Color(0xFFEC9A74)
+val PeachSoft = Color(0xFFF9DECB)
 
-val Ink = Color(0xFF4A4458)         // soft deep plum, gentle on the eyes
-val InkSoft = Color(0xFF837B92)
-val Cream = Color(0xFFFCF9FF)
+val Ink = Color(0xFF3A3350)        // deep plum text
+val InkSoft = Color(0xFF8A82A0)
+val Cream = Color(0xFFFBF7FF)
+val Sunflower = Color(0xFFF2C14E)  // soft, light sunflower yellow
+
+// Deep accents — used for text/icons sitting on a light, colourful phase background.
+val PeachDeep = Color(0xFFC2602F)
+val SageDeep = Color(0xFF36864F)
+val LavenderDeep = Color(0xFF5C45AD)
+val PinkDeep = Color(0xFFBF4775)
 
 private val SukoonColors = lightColorScheme(
     primary = Lavender,
     onPrimary = Color.White,
     primaryContainer = LavenderSoft,
-    onPrimaryContainer = Ink,
+    onPrimaryContainer = LavenderDeep,
     secondary = Sage,
     onSecondary = Color.White,
     secondaryContainer = SageSoft,
-    onSecondaryContainer = Ink,
+    onSecondaryContainer = SageDeep,
     tertiary = ClaudePeach,
     onTertiary = Color.White,
     tertiaryContainer = PeachSoft,
-    onTertiaryContainer = Ink,
+    onTertiaryContainer = PeachDeep,
     background = Cream,
     onBackground = Ink,
     surface = Color.White,
     onSurface = Ink,
     surfaceVariant = LavenderSoft,
     onSurfaceVariant = InkSoft,
-    outline = Color(0xFFD9D0E8),
+    outline = Color(0xFFCDC2E6),
 )
 
 private val SukoonShapes = Shapes(
-    extraSmall = RoundedCornerShape(12.dp),
-    small = RoundedCornerShape(16.dp),
-    medium = RoundedCornerShape(22.dp),
-    large = RoundedCornerShape(28.dp),
-    extraLarge = RoundedCornerShape(36.dp),
+    extraSmall = RoundedCornerShape(14.dp),
+    small = RoundedCornerShape(18.dp),
+    medium = RoundedCornerShape(24.dp),
+    large = RoundedCornerShape(30.dp),
+    extraLarge = RoundedCornerShape(40.dp),
 )
 
 private val SukoonType = Typography(
     displayLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Light,
-        fontSize = 52.sp,
-        letterSpacing = (-1).sp,
+        fontFamily = Inter, fontWeight = FontWeight(600),
+        fontSize = 60.sp, letterSpacing = (-1).sp,
     ),
     headlineMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 26.sp,
+        fontFamily = Inter, fontWeight = FontWeight(600), fontSize = 32.sp,
+        letterSpacing = (-0.5).sp,
     ),
     titleLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 20.sp,
+        fontFamily = Inter, fontWeight = FontWeight(600), fontSize = 23.sp,
     ),
     titleMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Medium,
-        fontSize = 17.sp,
+        fontFamily = Inter, fontWeight = FontWeight(500), fontSize = 19.sp,
     ),
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
+        fontFamily = Inter, fontWeight = FontWeight(400), fontSize = 18.sp,
     ),
     bodyMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        letterSpacing = 0.2.sp,
+        fontFamily = Inter, fontWeight = FontWeight(400), fontSize = 16.sp,
+        letterSpacing = 0.1.sp,
     ),
     labelLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 15.sp,
+        fontFamily = Inter, fontWeight = FontWeight(600), fontSize = 17.sp,
+        letterSpacing = 0.2.sp,
     ),
 )
 
@@ -109,7 +103,8 @@ fun SukoonTheme(content: @Composable () -> Unit) {
 }
 
 // ---- Per-phase colour language ---------------------------------------------------------
-/** The vivid accent used for the ring and controls in a given phase. */
+
+/** The mid accent for a phase (cards, ring on a light surface). */
 fun Phase.accent(): Color = when (this) {
     Phase.GetReady -> ClaudePeach
     Phase.Work -> Sage
@@ -118,13 +113,31 @@ fun Phase.accent(): Color = when (this) {
     Phase.Idle -> Lavender
 }
 
-/** The two soft tints used for that phase's drifting background. */
-fun Phase.ambient(): Pair<Color, Color> = when (this) {
-    Phase.GetReady -> PeachSoft to PinkSoft
-    Phase.Work -> SageSoft to LavenderSoft
-    Phase.Rest -> LavenderSoft to PinkSoft
-    Phase.Done -> PinkSoft to LavenderSoft
-    Phase.Idle -> LavenderSoft to PinkSoft
+/** A deep, high-contrast accent for text/icons on the phase's light background. */
+fun Phase.accentDeep(): Color = when (this) {
+    Phase.GetReady -> PeachDeep
+    Phase.Work -> SageDeep
+    Phase.Rest -> LavenderDeep
+    Phase.Done -> PinkDeep
+    Phase.Idle -> LavenderDeep
+}
+
+/** The prominent base colour the running background fills with for this phase. */
+fun Phase.bgBase(): Color = when (this) {
+    Phase.GetReady -> Color(0xFFF7D7C1)
+    Phase.Work -> Color(0xFFB4E1C1)
+    Phase.Rest -> Color(0xFFD9C9F4)
+    Phase.Done -> Color(0xFFF7C8DC)
+    Phase.Idle -> Color(0xFFE7DEFA)
+}
+
+/** A richer drifting-blob tint layered over [bgBase]. */
+fun Phase.bgBlob(): Color = when (this) {
+    Phase.GetReady -> ClaudePeach
+    Phase.Work -> Sage
+    Phase.Rest -> Lavender
+    Phase.Done -> BabyPink
+    Phase.Idle -> Lavender
 }
 
 /** A human, encouraging label for each phase. */

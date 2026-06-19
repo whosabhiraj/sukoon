@@ -22,23 +22,29 @@ elegant and effortless, in a palette of lavender, sage, baby pink and a soft cla
 ## Features
 
 - **Configurable routines** — number of rounds, work duration, rest interval, and an optional
-  *get-ready* lead-in. Large, friendly +/− steppers.
+  *get-ready* lead-in. Use the large +/− steppers, or tap a value to type an exact number
+  (e.g. 3 seconds).
 - **Saved profiles** — store, edit and reuse named configurations. They persist on-device, and
   a couple of gentle starters are seeded on first launch.
-- **Distinct, learnable chimes** for each moment (like a car key fob — one tone vs two):
-  | Cue | Sound |
-  |-----|-------|
-  | Get ready | one calm low note |
-  | Begin a round | two rising notes |
-  | Rest / reposition | one warm single note |
-  | Final 3 seconds | soft high pips *(optional, per routine)* |
-  | All done | a rising, resolving arpeggio |
+- **Soft, distinct chimes** for each moment — warm wooden "dun" mallet tones (marimba/kalimba-like)
+  that differ by pitch and shape, not by counting beeps:
+  | Cue | Character |
+  |-----|-----------|
+  | Get ready | two even low notes |
+  | Begin a round | a gently rising "dun dun dun" |
+  | Rest / reposition | two soft descending notes |
+  | Final 3 seconds | a single soft tick *(optional, per routine)* |
+  | All done | an ascending run that resolves |
 
-  Chimes are **synthesised in code** (`AudioTrack`) — no audio files, so the app stays tiny and
-  every cue is precisely tuned.
-- **Soothing motion** — a slowly drifting pastel backdrop, a ring that eases as the round counts
-  down, a "breathing" pulse during rest, and a soft bloom on completion. Colours shift by phase
-  (peach → sage → lavender → pink), and the screen stays awake for the whole session.
+  Samples are rendered offline by a small synthesiser (`tools/generate_chimes.js` — warm harmonic
+  partials, heavy low-pass, a touch of room) into `res/raw`, then played with `SoundPool` (the WAVs
+  are kept uncompressed and warmed up on load) for reliable, overlap-friendly playback.
+- **Soothing motion** — screens slide between one another; a drifting pastel backdrop; a ring that
+  eases as the round counts down (with a glowing tip); a "breathing" pulse during rest; and a
+  rippling bloom on completion. On each phase change the new colour **grows outward from the centre**
+  of the screen, which stays awake for the whole session.
+- **Type** — Inter throughout (a clean, light, San-Francisco-like sans), with a light weight for
+  the big timer.
 
 ## Tech stack
 
@@ -58,6 +64,8 @@ is drawn in-app so the build stays lightweight.
 | Android Gradle Plugin | 8.6.1 |
 | Gradle | 8.9 |
 | Persistence | SharedPreferences + `kotlinx.serialization` |
+| Type | Inter (bundled variable font) |
+| Audio | offline-rendered WAV samples · `SoundPool` |
 
 ## Getting started
 
@@ -96,7 +104,8 @@ offline.
 |------|-------|
 | App name | `app/src/main/res/values/strings.xml` (`app_name`) |
 | Palette & per-phase colours | `app/src/main/java/com/sukoon/timer/ui/theme/Theme.kt` |
-| Chime tones (notes, pitch, length) | `app/src/main/java/com/sukoon/timer/sound/ChimePlayer.kt` → `render()` |
+| Fonts | `app/src/main/res/font/` + `app/.../ui/theme/Fonts.kt` |
+| Chime tones | edit `tools/generate_chimes.js`, then run `node tools/generate_chimes.js` |
 | Stepper ranges & defaults | `app/src/main/java/com/sukoon/timer/ui/EditScreen.kt` |
 
 ## Project structure
@@ -106,7 +115,7 @@ app/src/main/java/com/sukoon/timer/
 ├── MainActivity.kt            entry point
 ├── model/                     TimerProfile, Phase, time formatting
 ├── data/ProfileRepository.kt  saves/loads routines (SharedPreferences + JSON)
-├── sound/ChimePlayer.kt       synthesised chimes (AudioTrack)
+├── sound/ChimePlayer.kt       plays the chime samples (SoundPool)
 ├── timer/TimerEngine.kt       ViewModel: navigation + the live countdown
 └── ui/                        Compose screens, theme, components, animated background
 ```
