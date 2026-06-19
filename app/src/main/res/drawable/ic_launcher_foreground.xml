@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Safe zone is the central 72x72. A soft sage timer ring with a peach marker dot. -->
+    <!-- Ring: circle centred at (54,54), radius 22, stroked. -->
+    <path
+        android:pathData="M54,32 A22,22 0 1,1 53.99,32 Z"
+        android:strokeColor="#9DBE9C"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+    <!-- Progress accent arc (a lighter Claude peach) sweeping the top-right quarter. -->
+    <path
+        android:pathData="M54,32 A22,22 0 0,1 76,54"
+        android:strokeColor="#E7A98C"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+    <!-- Marker dot at the top. -->
+    <path
+        android:pathData="M54,27 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0"
+        android:fillColor="#B9A7E0" />
+</vector>
